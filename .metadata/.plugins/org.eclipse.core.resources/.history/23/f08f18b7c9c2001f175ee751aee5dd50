@@ -1,0 +1,7 @@
+spring.application.name=LiscenceRenewal
+spring.datasource.url=jdbc:sqlserver:// localhost:1433;databaseName=LiscenceRenewal;encrypt=false;trustServerCertificate=true
+spring.datasource.username=siva
+spring.datasource.password=password
+spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.SQLServerDialect

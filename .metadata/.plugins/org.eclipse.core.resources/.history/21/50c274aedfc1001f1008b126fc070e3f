@@ -1,0 +1,13 @@
+package PavanProject.Appium;
+
+import org.testng.annotations.Test;
+
+import io.appium.java_client.android.AndroidDriver;
+
+public class AppiumBasics {
+    @Test
+	public void AppiumTest() {
+		
+		AndroidDriver driver = new AndroidDriver();
+	}
+}

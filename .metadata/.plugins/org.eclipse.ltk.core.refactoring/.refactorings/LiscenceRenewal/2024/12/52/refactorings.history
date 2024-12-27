@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;LiscenceRenewal/src/main/resources/static/UploadAppDetails.txt&apos; to &apos;UploadAppDetails.html&apos;" description="Rename resource &apos;UploadAppDetails.txt&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/main/resources/static/UploadAppDetails.txt" name="UploadAppDetails.html" stamp="1735135113476" updateReferences="true"/>
+</session>

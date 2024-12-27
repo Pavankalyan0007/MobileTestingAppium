@@ -1,0 +1,89 @@
+package com.example.fileuploadapp.controller;
+
+import java.io.*;
+import java.nio.file.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+
+@RestController
+@RequestMapping("/upload")
+public class FileUploadController {
+
+    @PostMapping
+    public String uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            Path tempDir = Files.createTempDirectory("");
+            Path tempFile = tempDir.resolve(file.getOriginalFilename());
+            Files.write(tempFile, file.getBytes());
+
+            String content = new String(Files.readAllBytes(tempFile));
+            JSONObject jsonObject = new JSONObject(content);
+            JSONArray applications = jsonObject.getJSONArray("applications");
+
+            createTableIfNotExists();
+
+            for (int i = 0; i < applications.length(); i++) {
+                JSONObject app = applications.getJSONObject(i);
+                insertApplicationToDatabase(
+                    app.getString("applicationId"),
+                    app.getString("applicationName"),
+                    app.getString("supportGroup"),
+                    app.getString("serverName"),
+                    app.getString("sslLink"),
+                    app.getString("groupId")
+                );
+            }
+
+            return "File uploaded and applications saved successfully!";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    private void createTableIfNotExists() throws Exception {
+        String url = "jdbc:mysql://localhost:3306/your_database";
+        String user = "root";
+        String password = "password";
+
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             Statement stmt = conn.createStatement()) {
+            String sql = "CREATE TABLE IF NOT EXISTS applications (" +
+                         "application_id VARCHAR(255) PRIMARY KEY, " +
+                         "application_name VARCHAR(255) NOT NULL, " +
+                         "support_group VARCHAR(255) NOT NULL, " +
+                         "server_name VARCHAR(255) NOT NULL, " +
+                         "ssl_link VARCHAR(255) NOT NULL, " +
+                         "group_id VARCHAR(255) NOT NULL)";
+            stmt.execute(sql);
+        }
+    }
+
+    private void insertApplicationToDatabase(String applicationId, String applicationName,
+                                             String supportGroup, String serverName,
+                                             String sslLink, String groupId) throws Exception {
+        String url = "jdbc:mysql://localhost:3306/your_database";
+        String user = "root";
+        String password = "password";
+
+        String sql = "INSERT INTO applications (application_id, application_name, support_group, server_name, ssl_link, group_id) " +
+                     "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, applicationId);
+            pstmt.setString(2, applicationName);
+            pstmt.setString(3, supportGroup);
+            pstmt.setString(4, serverName);
+            pstmt.setString(5, sslLink);
+            pstmt.setString(6, groupId);
+
+            pstmt.executeUpdate();
+        }
+    }
+}

@@ -1,0 +1,5 @@
+package PavanProject.Appium;
+
+public class BaseTest {
+
+}
